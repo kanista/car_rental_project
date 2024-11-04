@@ -1,21 +1,23 @@
 import { Button, Col, DatePicker, Divider, Form, Row, Select } from "antd";
 import { useEffect, useState } from "react";
-import './AddJob.scss';
+import './EditJob.scss';
 
 const AddJob = () => {
     const [form] = Form.useForm();
     const [cars, setCars] = useState([]);
     const [mechanics, setMechanics] = useState([]);
+    const [jobStatuses, setJobStatuses] = useState([]);
 
     useEffect(() => {
         // Simulate fetching data from the backend
         fetchCarData();
         fetchMechanicData();
+        fetchJobStatusData();
     }, []);
 
     const fetchCarData = async () => {
         // Replace with actual API call
-        const carData = await fetch('/api/cars'); // Example endpoint
+        const carData = await fetch('/api/cars');
         const cars = await carData.json();
         setCars(cars);
     };
@@ -27,6 +29,12 @@ const AddJob = () => {
         setMechanics(mechanics);
     };
 
+    const fetchJobStatusData = async () => {
+        // Replace with actual API call
+        const jobStatusData = await fetch('/api/jobStatuses'); // Example endpoint
+        const jobStatuses = await jobStatusData.json();
+        setJobStatuses(jobStatuses);
+    };
 
     const handleSubmit = (values) => {
         console.log(values);
@@ -41,8 +49,8 @@ const AddJob = () => {
         <>
             <Form
                 form={form}
-                name="addJob"
-                className="add-job-form"
+                name="editJob"
+                className="edit-job-form"
                 layout="vertical"
                 onFinish={handleSubmit}
             >
@@ -114,9 +122,27 @@ const AddJob = () => {
                 </Row>
 
                 <Row gutter={16}>
+                    <Col span={8}>
+                        <Form.Item
+                            label="Job Status"
+                            name="jobStatus"
+                            rules={[{ required: true, message: "Please select job status!" }]}
+                        >
+                            <Select placeholder="Select job status">
+                                {jobStatuses.map(status => (
+                                    <Select.Option key={status.id} value={status.id}>
+                                        {status.name}
+                                    </Select.Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                </Row>
+
+                <Row gutter={16}>
                     <Col span={4}>
                         <Button type="primary" htmlType="submit" block>
-                            Add Job
+                            Save Changes
                         </Button>
                     </Col>
                     <Col span={4}>
